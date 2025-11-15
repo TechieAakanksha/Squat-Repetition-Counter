@@ -45,7 +45,7 @@ jobs:
         python -c "import mediapipe; print('MediaPipe OK')"
         python -c "import numpy; print('NumPy OK')"
         python -c "import tensorflow; print('TensorFlow OK')"
-        python -c "from playsound2 import playsound; print('playsound2 OK')"
+        python -c "from playsound3 import playsound; print('playsound3 OK')"
     
     - name: Check Flask app syntax
       run: |
