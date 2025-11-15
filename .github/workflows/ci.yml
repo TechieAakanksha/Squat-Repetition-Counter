@@ -121,3 +121,47 @@ jobs:
         name: deployment-package
         path: deployment.tar.gz
         retention-days: 30
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgl1 libglib2.0-0
+        sudo apt-get clean
+        sudo rm -rf /var/lib/apt/lists/*
+    
+    - name: Install Python dependencies
+      run: |
+        pip install --upgrade pip wheel setuptools --no-cache-dir
+        pip install --no-cache-dir -r requirements.txt
+    
+    - name: Prepare static files for GitHub Pages
+      run: |
+        mkdir -p docs
+        cp -r static docs/
+        # Convert Flask templates to static HTML
+        if [ -f "templates/index.html" ]; then
+          sed 's|{{ url_for("static", filename="css/style.css") }}|./static/css/style.css|g; s|{{ url_for("static", filename="Js/style.js") }}|./static/Js/style.js|g; s|{{ url_for("video_feed") }}|/video_feed|g' templates/index.html > docs/index.html
+        fi
+    
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./docs
+        publish_branch: gh-pages

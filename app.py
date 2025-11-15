@@ -144,4 +144,8 @@ def reset_counter():
     return jsonify({'success': True, 'counter': counter})
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    import os
+    port = int(os.environ.get('PORT', 5000))
+    host = os.environ.get('HOST', '127.0.0.1')
+    debug = os.environ.get('DEBUG', 'True').lower() == 'true'
+    app.run(host=host, port=port, debug=debug, threaded=True)
