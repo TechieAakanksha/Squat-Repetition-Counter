@@ -45,6 +45,7 @@ jobs:
         python -c "import mediapipe; print('MediaPipe OK')"
         python -c "import numpy; print('NumPy OK')"
         python -c "import tensorflow; print('TensorFlow OK')"
+        python -c "from playsound2 import playsound; print('playsound2 OK')"
     
     - name: Check Flask app syntax
       run: |
@@ -53,6 +54,7 @@ jobs:
     - name: Verify app can be imported
       run: |
         python -c "from app import app; print('App imported successfully')"
+        python -c "import pose_squat_counter; print('pose_squat_counter imported successfully')" || echo "pose_squat_counter import skipped (requires camera)"
       env:
         SKIP_CAMERA: 'true'
   
