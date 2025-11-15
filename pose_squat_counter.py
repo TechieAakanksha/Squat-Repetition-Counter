@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import sqlite3
 import time
-from playsound import playsound
+from playsound2 import playsound
 import pyttsx3
 
 # Initialize Mediapipe
