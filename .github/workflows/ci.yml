@@ -27,7 +27,7 @@ jobs:
     - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-opencv-data libgl1-mesa-glx libglib2.0-0
+        sudo apt-get install -y libgl1 libglib2.0-0
     
     - name: Upgrade pip
       run: |
@@ -54,7 +54,6 @@ jobs:
       run: |
         python -c "from app import app; print('App imported successfully')"
       env:
-        # Prevent app from trying to access camera
         SKIP_CAMERA: 'true'
   
   lint:
@@ -97,10 +96,13 @@ jobs:
         python-version: '3.10'
         cache: 'pip'
     
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y python3-opencv-data libgl1-mesa-glx libglib2.0-0
+        sudo apt-get install -y libgl1 libglib2.0-0
+
+    - name: Install Python dependencies
+      run: |
         pip install --upgrade pip wheel setuptools
         pip install -r requirements.txt
     
@@ -116,4 +118,3 @@ jobs:
         name: deployment-package
         path: deployment.tar.gz
         retention-days: 30
-
