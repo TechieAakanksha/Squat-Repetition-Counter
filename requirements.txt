@@ -1,0 +1,10 @@
+wheel
+flask>=2.3.0
+opencv-python>=4.8.0
+mediapipe>=0.10.0
+numpy>=1.24.0
+playsound>=1.2.2
+pyttsx3>=2.90
+tensorflow>=2.13.0
+protobuf==3.20.3
+

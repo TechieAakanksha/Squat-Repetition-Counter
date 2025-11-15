@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Posture Pal – Squat Counter</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Posture Pal – Squat Counter</h1>
+        <h2>AI-Powered Real-Time Squat Detection</h2>
+        
+        <div class="main-content">
+            <div class="video-container">
+                <img src="{{ url_for('video_feed') }}" alt="Video Feed" id="video-feed">
+            </div>
+            
+            <div class="side-panel">
+                <div class="counter-box">
+                    <h3>SQUATS</h3>
+                    <p>Reps</p>
+                    <span id="counter">0</span>
+                </div>
+                
+                <div class="buttons">
+                    <button onclick="resetCounter()">Reset Counter</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="instructions">
+            <h3>How to use:</h3>
+            <ul>
+                <li>Stand in front of your webcam</li>
+                <li>Make sure your full body is visible</li>
+                <li>Perform squats and watch the counter update automatically</li>
+                <li>Click "Reset Counter" to start over</li>
+            </ul>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='Js/style.js') }}"></script>
+    <script>
+        // Update counter from server
+        function updateCounter() {
+            fetch('/counter')
+                .then(response => response.json())
+                .then(data => {
+                    const counterElement = document.getElementById('counter');
+                    const oldCount = parseInt(counterElement.textContent);
+                    if (data.counter !== oldCount) {
+                        counterElement.textContent = data.counter;
+                        counterElement.classList.add('pop');
+                        setTimeout(() => counterElement.classList.remove('pop'), 300);
+                    }
+                });
+        }
+        
+        function resetCounter() {
+            fetch('/reset', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('counter').textContent = data.counter;
+                });
+        }
+        
+        // Update counter every 500ms
+        setInterval(updateCounter, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-opencv-data libgl1-mesa-glx libglib2.0-0
+        pip install --upgrade pip wheel setuptools
+        pip install -r requirements.txt
+    
+    - name: Build application
+      run: |
+        echo "Application built successfully"
+        python -c "from app import app; print('✓ App ready for deployment')"
+    
+    # Example: Deploy to Heroku (uncomment and configure if needed)
+    # - name: Deploy to Heroku
+    #   uses: akhileshns/heroku-deploy@v3.12.14
+    #   with:
+    #     heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+    #     heroku_app_name: "your-app-name"
+    #     heroku_email: "your-email@example.com"
+    
+    # Example: Deploy to AWS Elastic Beanstalk (uncomment and configure if needed)
+    # - name: Deploy to AWS EB
+    #   uses: einaregilsson/beanstalk-deploy@v22
+    #   with:
+    #     aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #     aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #     application_name: your-app-name
+    #     environment_name: your-env-name
+    #     version_label: ${{ github.sha }}
+    #     region: us-east-1
+    #     deployment_package: deployment.tar.gz
+
