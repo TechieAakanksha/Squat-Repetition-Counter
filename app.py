@@ -37,7 +37,7 @@ def init_camera():
         pose = mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 def generate_frames():
-    global counter, stage, cap, pose
+    global counter, stage
     
     init_camera()
     
