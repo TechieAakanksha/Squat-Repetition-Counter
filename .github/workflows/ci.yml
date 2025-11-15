@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.10', '3.11']
+        python-version: ['3.10']
     
     steps:
     - name: Checkout code
@@ -28,15 +28,17 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libgl1 libglib2.0-0
+        sudo apt-get clean
+        sudo rm -rf /var/lib/apt/lists/*
     
     - name: Upgrade pip
       run: |
-        python -m pip install --upgrade pip
-        pip install wheel setuptools
+        python -m pip install --upgrade pip --no-cache-dir
+        pip install wheel setuptools --no-cache-dir
     
     - name: Install Python dependencies
       run: |
-        pip install -r requirements.txt
+        pip install --no-cache-dir -r requirements.txt
     
     - name: Verify imports
       run: |
@@ -57,6 +59,12 @@ jobs:
         python -c "import pose_squat_counter; print('pose_squat_counter imported successfully')" || echo "pose_squat_counter import skipped (requires camera)"
       env:
         SKIP_CAMERA: 'true'
+    
+    - name: Clean up pip cache
+      if: always()
+      run: |
+        pip cache purge || true
+        rm -rf ~/.cache/pip || true
   
   lint:
     runs-on: ubuntu-latest
@@ -73,7 +81,7 @@ jobs:
     
     - name: Install linting tools
       run: |
-        pip install flake8 pylint
+        pip install --no-cache-dir flake8 pylint
     
     - name: Run flake8
       run: |
@@ -102,11 +110,13 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libgl1 libglib2.0-0
+        sudo apt-get clean
+        sudo rm -rf /var/lib/apt/lists/*
 
     - name: Install Python dependencies
       run: |
-        pip install --upgrade pip wheel setuptools
-        pip install -r requirements.txt
+        pip install --upgrade pip wheel setuptools --no-cache-dir
+        pip install --no-cache-dir -r requirements.txt
     
     - name: Create deployment package
       run: |
@@ -120,3 +130,9 @@ jobs:
         name: deployment-package
         path: deployment.tar.gz
         retention-days: 30
+    
+    - name: Clean up pip cache
+      if: always()
+      run: |
+        pip cache purge || true
+        rm -rf ~/.cache/pip || true
