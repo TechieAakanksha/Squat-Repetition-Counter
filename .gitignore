@@ -30,7 +30,7 @@ ENV/
 env.bak/
 venv.bak/
 .venv
-
+dataset/
 # Flask
 instance/
 .webassets-cache
